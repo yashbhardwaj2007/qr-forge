@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background-color: rgba(124, 58, 237, 0.35);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(124, 58, 237, 0.35);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/70 dark:bg-ink-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10;
+  }
+
+  .card {
+    @apply rounded-2xl border border-ink-100 dark:border-ink-800 bg-white dark:bg-ink-900 shadow-card dark:shadow-card-dark;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-ink-950 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-gradient-to-r from-brand-600 to-purple-600 text-white shadow-glow hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply btn bg-ink-100 dark:bg-ink-800 text-ink-800 dark:text-ink-100 hover:bg-ink-200 dark:hover:bg-ink-700;
+  }
+
+  .btn-outline {
+    @apply btn border border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-200 hover:border-brand-400 hover:text-brand-600 dark:hover:text-brand-400;
+  }
+
+  .btn-icon {
+    @apply inline-flex items-center justify-center rounded-xl h-10 w-10 border border-ink-200 dark:border-ink-700 text-ink-600 dark:text-ink-300 hover:border-brand-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors duration-200;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 px-4 py-2.5 text-sm text-ink-900 dark:text-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-150;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-ink-700 dark:text-ink-300 mb-1.5;
+  }
+
+  .section {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .skeleton {
+    @apply relative overflow-hidden bg-ink-100 dark:bg-ink-800 rounded-xl;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(124, 58, 237, 0.12),
+      transparent
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+  }
+}
