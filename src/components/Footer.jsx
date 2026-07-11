@@ -1,12 +1,6 @@
 import { Link } from 'react-router-dom';
-import { HiOutlineQrcode, HiOutlineHeart } from 'react-icons/hi';
+import { HiOutlineQrcode } from 'react-icons/hi';
 import Newsletter from './Newsletter.jsx';
-
-// Point this at your own Ko-fi/Buy Me a Coffee/GitHub Sponsors page. Left as
-// a plain constant (not an env var) since showing a placeholder link here
-// isn't misleading the way a fake "subscribed!" toast would be — just
-// update it directly before you launch.
-const SUPPORT_URL = 'https://ko-fi.com/';
 
 const columns = [
   {
@@ -87,19 +81,9 @@ export default function Footer() {
           <p className="text-xs text-ink-500 dark:text-ink-500">
             &copy; {year} QR Forge. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
-            <a
-              href={SUPPORT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs font-medium text-ink-500 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
-            >
-              <HiOutlineHeart size={14} aria-hidden="true" /> Support this project
-            </a>
-            <p className="text-xs text-ink-400 dark:text-ink-500">
-              Built with React, Vite &amp; Tailwind CSS.
-            </p>
-          </div>
+          <p className="text-xs text-ink-400 dark:text-ink-500">
+            Built with React, Vite &amp; Tailwind CSS.
+          </p>
         </div>
       </div>
     </footer>

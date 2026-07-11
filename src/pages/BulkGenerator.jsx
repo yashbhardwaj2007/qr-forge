@@ -15,6 +15,7 @@ import QRTypeSelector, { QR_TYPES } from '../components/QRTypeSelector.jsx';
 import { buildQrPayload } from '../utils/qrDataFormatters.js';
 import { downloadBlob } from '../utils/downloadUtils.js';
 import { BULK_FIELD_CONFIG, buildExampleCsv } from '../data/qrTypeFields.js';
+import { Sentry } from '../lib/sentry.js';
 
 const MAX_ROWS = 500;
 
@@ -120,7 +121,9 @@ export default function BulkGenerator() {
       const blob = await zip.generateAsync({ type: 'blob' });
       downloadBlob(blob, `qr-forge-bulk-${type}.zip`);
       toast.success(`Generated ${validRows.length} QR codes`);
-    } catch {
+    } catch (err) {
+      console.error('QR Forge: bulk ZIP generation failed', err);
+      Sentry.captureException(err);
       toast.error('Something went wrong generating the ZIP. Please try again.');
     } finally {
       setGenerating(false);
@@ -203,7 +206,10 @@ export default function BulkGenerator() {
                 type="file"
                 accept=".csv,text/csv"
                 className="hidden"
-                onChange={(e) => handleFile(e.target.files?.[0])}
+                onChange={(e) => {
+                  handleFile(e.target.files?.[0]);
+                  e.target.value = '';
+                }}
               />
             </div>
           </div>

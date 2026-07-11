@@ -1,7 +1,1 @@
-# This file is required by Google AdSense and other ad networks to verify
-# that this site is authorized to sell its ad inventory.
-#
-# Once you're approved for AdSense, replace the line below with the exact
-# snippet shown in your AdSense account under Sites > [your site] > "ads.txt".
-# It will look like:
-# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+google.com, pub-8123667836561123, DIRECT, f08c47fec0942fa0

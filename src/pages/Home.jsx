@@ -76,7 +76,7 @@ const FAQS = [
   },
 ];
 
-const SITE_URL = 'https://qr-forge.vercel.app';
+const SITE_URL = 'https://forge-qr.vercel.app';
 
 const WEB_APPLICATION_SCHEMA = {
   '@context': 'https://schema.org',

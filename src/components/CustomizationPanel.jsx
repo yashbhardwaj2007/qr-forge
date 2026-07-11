@@ -225,7 +225,10 @@ function CustomizationPanel({ options, onChange, onReset }) {
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={(e) => handleLogoFile(e.target.files?.[0])}
+              onChange={(e) => {
+                handleLogoFile(e.target.files?.[0]);
+                e.target.value = '';
+              }}
             />
           </div>
         )}

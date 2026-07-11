@@ -15,6 +15,7 @@ import {
 import { useQRCode } from '../hooks/useQRCode.js';
 import { QRPreviewSkeleton } from './SkeletonLoader.jsx';
 import PrintTemplateModal from './PrintTemplateModal.jsx';
+import { Sentry } from '../lib/sentry.js';
 import {
   downloadDataUrl,
   downloadBlob,
@@ -35,6 +36,8 @@ export default function QRPreview({ payload, options, onFavoriteToggle, isFavori
     try {
       await fn();
     } catch (err) {
+      console.error(`QR Forge: "${action}" action failed`, err);
+      Sentry.captureException(err);
       toast.error(err?.message || 'Something went wrong.');
     } finally {
       setBusyAction('');

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://qr-forge.vercel.app/sitemap.xml
+Sitemap: https://forge-qr.vercel.app/sitemap.xml

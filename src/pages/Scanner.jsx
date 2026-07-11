@@ -15,9 +15,16 @@ import AdSlot from '../components/AdSlot.jsx';
 import { useLocalStorage } from '../hooks/useLocalStorage.js';
 import { classifyScanResult } from '../utils/scanResultUtils.js';
 import { copyText } from '../utils/downloadUtils.js';
+import { Sentry } from '../lib/sentry.js';
 
 const SCAN_HISTORY_KEY = 'qr-forge-scan-history';
 const MAX_SCAN_HISTORY = 15;
+// While the camera is pointed at the same code, the decode callback keeps
+// firing (up to maxScansPerSecond times a second) — without this, that
+// meant a fresh toast and a re-recorded history entry several times a
+// second. Re-scans of the *same* code within this window are ignored;
+// scanning a *different* code always registers immediately.
+const SAME_CODE_COOLDOWN_MS = 3000;
 
 const SCANNER_SCHEMA = {
   '@context': 'https://schema.org',
@@ -34,16 +41,22 @@ export default function Scanner() {
   const videoRef = useRef(null);
   const scannerRef = useRef(null);
   const fileInputRef = useRef(null);
+  const lastScanRef = useRef({ text: '', time: 0 });
 
   const [cameraState, setCameraState] = useState('idle'); // idle | starting | active | denied | unsupported | error
-  const [result, setResult] = useState(null); // { text, classification, scannedAt }
+  const [result, setResult] = useState(null); // { id, text, scannedAt, classification }
   const [scanHistory, setScanHistory] = useLocalStorage(SCAN_HISTORY_KEY, []);
 
   const recordScan = useCallback(
     (text) => {
       const classification = classifyScanResult(text);
-      const entry = { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, text, scannedAt: new Date().toISOString() };
-      setResult({ ...entry, classification });
+      const entry = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        text,
+        scannedAt: new Date().toISOString(),
+        classification,
+      };
+      setResult(entry);
       setScanHistory((prev) => {
         const withoutDupe = prev.filter((s) => s.text !== text);
         return [entry, ...withoutDupe].slice(0, MAX_SCAN_HISTORY);
@@ -73,6 +86,12 @@ export default function Scanner() {
       const scanner = new QrScanner(
         videoRef.current,
         (res) => {
+          const now = Date.now();
+          const last = lastScanRef.current;
+          if (res.data === last.text && now - last.time < SAME_CODE_COOLDOWN_MS) {
+            return; // same code re-detected within the cooldown — ignore
+          }
+          lastScanRef.current = { text: res.data, time: now };
           recordScan(res.data);
           toast.success('QR code scanned!');
         },
@@ -93,6 +112,8 @@ export default function Scanner() {
       if (err?.name === 'NotAllowedError') {
         setCameraState('denied');
       } else {
+        console.error('QR Forge: camera failed to start', err);
+        Sentry.captureException(err);
         setCameraState('error');
       }
     }
@@ -150,7 +171,7 @@ export default function Scanner() {
               <div className="relative aspect-square sm:aspect-video w-full overflow-hidden rounded-2xl bg-ink-950">
                 <video
                   ref={videoRef}
-                  className={`h-full w-full object-cover ${cameraState === 'active' ? '' : 'hidden'}`}
+                  className="h-full w-full object-cover"
                   muted
                   playsInline
                   aria-label="Live camera feed for QR scanning"
@@ -223,7 +244,10 @@ export default function Scanner() {
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={(e) => handleFileUpload(e.target.files?.[0])}
+                  onChange={(e) => {
+                    handleFileUpload(e.target.files?.[0]);
+                    e.target.value = '';
+                  }}
                 />
               </div>
             </div>
@@ -280,7 +304,9 @@ export default function Scanner() {
               ) : (
                 <ul className="mt-4 space-y-2 max-h-96 overflow-y-auto pr-1">
                   {scanHistory.map((entry) => {
-                    const classification = classifyScanResult(entry.text);
+                    // Fall back for entries saved by an older version of
+                    // this page, before classification was stored inline.
+                    const classification = entry.classification || classifyScanResult(entry.text);
                     return (
                       <li key={entry.id}>
                         <div className="group flex items-center gap-3 rounded-xl border border-ink-100 dark:border-ink-800 p-2.5 hover:border-brand-300 dark:hover:border-brand-700 transition-colors">
