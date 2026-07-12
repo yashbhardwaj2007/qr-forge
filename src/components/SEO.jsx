@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useDocumentHead } from '../hooks/useDocumentHead.js';
 
-const SITE_URL = 'https://forge-qr.vercel.app';
+export const SITE_URL = 'https://forge-qr.vercel.app';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
 const ORGANIZATION_SCHEMA = {

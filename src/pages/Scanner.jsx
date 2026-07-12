@@ -133,14 +133,9 @@ export default function Scanner() {
     }
   };
 
-  const handleAction = async (entry) => {
-    const classification = entry.classification || classifyScanResult(entry.text);
-    if (classification.action === 'open' && classification.href) {
-      window.open(classification.href, '_blank', 'noopener,noreferrer');
-    } else {
-      const ok = await copyText(entry.text).catch(() => false);
-      toast[ok ? 'success' : 'error'](ok ? 'Copied to clipboard' : 'Could not copy — try again.');
-    }
+  const handleCopyAction = async (entry) => {
+    const ok = await copyText(entry.text).catch(() => false);
+    toast[ok ? 'success' : 'error'](ok ? 'Copied to clipboard' : 'Could not copy — try again.');
   };
 
   const clearHistory = () => setScanHistory([]);
@@ -262,11 +257,16 @@ export default function Scanner() {
                 </p>
                 <div className="mt-4 flex gap-2">
                   {result.classification.action === 'open' ? (
-                    <button type="button" onClick={() => handleAction(result)} className="btn-primary">
+                    <a
+                      href={result.classification.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary"
+                    >
                       <HiOutlineExternalLink size={16} aria-hidden="true" /> Open
-                    </button>
+                    </a>
                   ) : (
-                    <button type="button" onClick={() => handleAction(result)} className="btn-primary">
+                    <button type="button" onClick={() => handleCopyAction(result)} className="btn-primary">
                       <HiOutlineClipboardCopy size={16} aria-hidden="true" /> Copy
                     </button>
                   )}
@@ -307,28 +307,45 @@ export default function Scanner() {
                     // Fall back for entries saved by an older version of
                     // this page, before classification was stored inline.
                     const classification = entry.classification || classifyScanResult(entry.text);
+                    const itemContent = (
+                      <>
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-400">
+                          {classification.action === 'open' ? (
+                            <HiOutlineExternalLink size={16} aria-hidden="true" />
+                          ) : (
+                            <HiOutlineClipboardCopy size={16} aria-hidden="true" />
+                          )}
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm font-medium text-ink-800 dark:text-ink-100">
+                            {entry.text}
+                          </span>
+                          <span className="block text-xs text-ink-400">{classification.type}</span>
+                        </span>
+                      </>
+                    );
+                    const itemClassName = 'flex flex-1 items-center gap-3 text-left min-w-0';
                     return (
                       <li key={entry.id}>
                         <div className="group flex items-center gap-3 rounded-xl border border-ink-100 dark:border-ink-800 p-2.5 hover:border-brand-300 dark:hover:border-brand-700 transition-colors">
-                          <button
-                            type="button"
-                            onClick={() => handleAction(entry)}
-                            className="flex flex-1 items-center gap-3 text-left min-w-0"
-                          >
-                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-400">
-                              {classification.action === 'open' ? (
-                                <HiOutlineExternalLink size={16} aria-hidden="true" />
-                              ) : (
-                                <HiOutlineClipboardCopy size={16} aria-hidden="true" />
-                              )}
-                            </span>
-                            <span className="min-w-0">
-                              <span className="block truncate text-sm font-medium text-ink-800 dark:text-ink-100">
-                                {entry.text}
-                              </span>
-                              <span className="block text-xs text-ink-400">{classification.type}</span>
-                            </span>
-                          </button>
+                          {classification.action === 'open' && classification.href ? (
+                            <a
+                              href={classification.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={itemClassName}
+                            >
+                              {itemContent}
+                            </a>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleCopyAction(entry)}
+                              className={itemClassName}
+                            >
+                              {itemContent}
+                            </button>
+                          )}
                           <button
                             type="button"
                             onClick={() =>

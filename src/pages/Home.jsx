@@ -15,6 +15,7 @@ import Newsletter from '../components/Newsletter.jsx';
 import AdSlot from '../components/AdSlot.jsx';
 import { QR_TYPES } from '../components/QRTypeSelector.jsx';
 import { QR_TYPE_CONTENT } from '../data/qrTypeContent.js';
+import { BLOG_POSTS } from '../data/blogPosts.js';
 
 const FEATURES = [
   {
@@ -220,6 +221,44 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {BLOG_POSTS.length > 0 && (
+        <section className="section py-16">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <h2 className="font-display text-3xl font-bold">From the blog</h2>
+            <p className="mt-3 text-ink-500 dark:text-ink-400">
+              Practical guides on getting the most out of QR codes.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-4xl mx-auto">
+            {[...BLOG_POSTS]
+              .sort((a, b) => new Date(b.date) - new Date(a.date))
+              .slice(0, 3)
+              .map((post) => (
+                <Link
+                  key={post.slug}
+                  to={`/blog/${post.slug}`}
+                  className="group card p-5 hover:-translate-y-1 hover:shadow-glow transition-all duration-300"
+                >
+                  <h3 className="font-semibold text-sm group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                    {post.title}
+                  </h3>
+                  <p className="mt-2 text-xs text-ink-500 dark:text-ink-400 line-clamp-3">
+                    {post.description}
+                  </p>
+                </Link>
+              ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline"
+            >
+              Read more on the blog <HiOutlineArrowRight size={14} aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
+      )}
 
       <FAQSection
         faqs={FAQS}

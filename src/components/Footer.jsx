@@ -9,6 +9,7 @@ const columns = [
       { label: 'QR Generator', to: '/' },
       { label: 'QR Code Scanner', to: '/qr-code-scanner' },
       { label: 'Bulk QR Generator', to: '/bulk-qr-code-generator' },
+      { label: 'Blog', to: '/blog' },
       { label: 'WiFi QR Code', to: '/qr-code-generator/wifi' },
       { label: 'vCard QR Code', to: '/qr-code-generator/vcard' },
       { label: 'WhatsApp QR Code', to: '/qr-code-generator/whatsapp' },

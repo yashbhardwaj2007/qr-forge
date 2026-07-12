@@ -1,12 +1,29 @@
+import { useMemo } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { HiOutlineCheckCircle, HiOutlineArrowLeft } from 'react-icons/hi';
-import SEO from '../components/SEO.jsx';
+import { HiOutlineCheckCircle, HiChevronRight } from 'react-icons/hi';
+import SEO, { SITE_URL } from '../components/SEO.jsx';
 import QRGeneratorWidget from '../components/QRGeneratorWidget.jsx';
 import FAQSection, { buildFaqSchema } from '../components/FAQSection.jsx';
 import AdSlot from '../components/AdSlot.jsx';
 import Newsletter from '../components/Newsletter.jsx';
 import { QR_TYPES } from '../components/QRTypeSelector.jsx';
 import { QR_TYPE_CONTENT } from '../data/qrTypeContent.js';
+
+function buildBreadcrumbSchema(typeLabel, type) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: `${typeLabel} QR Code Generator`,
+        item: `${SITE_URL}/qr-code-generator/${type}`,
+      },
+    ],
+  };
+}
 
 /**
  * A dedicated, indexable landing page per QR type (e.g.
@@ -28,6 +45,16 @@ export default function QRTypeLanding() {
   }
 
   const faqSchema = buildFaqSchema(content.faqs);
+  const breadcrumbSchema = buildBreadcrumbSchema(typeMeta.label, type);
+  const combinedStructuredData = useMemo(
+    () => [faqSchema, breadcrumbSchema],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [type]
+  );
+  // A handful of *other* types to cross-link to, for internal linking
+  // between related pages — not all 9, to keep it genuinely useful rather
+  // than a wall of links.
+  const relatedTypes = QR_TYPES.filter((t) => t.id !== type).slice(0, 4);
 
   return (
     <>
@@ -35,16 +62,17 @@ export default function QRTypeLanding() {
         title={content.metaTitle}
         description={content.metaDescription}
         path={`/qr-code-generator/${type}`}
-        structuredData={faqSchema}
+        structuredData={combinedStructuredData}
       />
 
       <section className="section pt-16 pb-4">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-500 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
-        >
-          <HiOutlineArrowLeft size={16} aria-hidden="true" /> All QR code types
-        </Link>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-ink-500">
+          <Link to="/" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+            Home
+          </Link>
+          <HiChevronRight size={14} className="text-ink-300 dark:text-ink-600" aria-hidden="true" />
+          <span className="text-ink-700 dark:text-ink-300 font-medium">{typeMeta.label} QR Code Generator</span>
+        </nav>
 
         <h1 className="mt-6 font-display text-3xl sm:text-4xl font-extrabold tracking-tight max-w-3xl">
           {content.h1}
@@ -77,6 +105,22 @@ export default function QRTypeLanding() {
       <div className="section pb-16">
         <AdSlot label="Advertisement" minHeight={90} />
       </div>
+
+      <section className="section pb-16">
+        <h2 className="font-display text-xl font-bold mb-5">Other QR code types</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {relatedTypes.map(({ id, label, icon: Icon }) => (
+            <Link
+              key={id}
+              to={`/qr-code-generator/${id}`}
+              className="group card flex flex-col items-center gap-2 p-4 text-center hover:-translate-y-1 hover:shadow-glow transition-all duration-300"
+            >
+              <Icon size={20} className="text-brand-600 dark:text-brand-400" aria-hidden="true" />
+              <span className="text-sm font-medium">{label}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <FAQSection faqs={content.faqs} idPrefix={`faq-${type}`} title={`${typeMeta.label} QR code — FAQ`} />
 

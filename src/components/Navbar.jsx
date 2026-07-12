@@ -6,6 +6,7 @@ import { useTheme } from '../context/ThemeContext.jsx';
 const NAV_LINKS = [
   { to: '/', label: 'Generator' },
   { to: '/qr-code-scanner', label: 'Scanner' },
+  { to: '/blog', label: 'Blog' },
   { to: '/about', label: 'About' },
   { to: '/contact', label: 'Contact' },
 ];

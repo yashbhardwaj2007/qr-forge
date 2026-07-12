@@ -15,6 +15,8 @@ const Home = lazy(() => import('./pages/Home.jsx'));
 const QRTypeLanding = lazy(() => import('./pages/QRTypeLanding.jsx'));
 const Scanner = lazy(() => import('./pages/Scanner.jsx'));
 const BulkGenerator = lazy(() => import('./pages/BulkGenerator.jsx'));
+const Blog = lazy(() => import('./pages/Blog.jsx'));
+const BlogPost = lazy(() => import('./pages/BlogPost.jsx'));
 const About = lazy(() => import('./pages/About.jsx'));
 const Privacy = lazy(() => import('./pages/Privacy.jsx'));
 const Terms = lazy(() => import('./pages/Terms.jsx'));
@@ -53,6 +55,8 @@ export default function App() {
             <Route path="/qr-code-generator/:type" element={<QRTypeLanding />} />
             <Route path="/qr-code-scanner" element={<Scanner />} />
             <Route path="/bulk-qr-code-generator" element={<BulkGenerator />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/about" element={<About />} />
             <Route path="/privacy-policy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
