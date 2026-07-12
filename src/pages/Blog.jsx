@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { HiOutlineClock, HiOutlineCalendar, HiOutlineArrowRight } from 'react-icons/hi';
 import SEO from '../components/SEO.jsx';
+import AdSlot from '../components/AdSlot.jsx';
 import { BLOG_POSTS } from '../data/blogPosts.js';
 
 function formatDate(dateStr) {
@@ -28,6 +29,12 @@ export default function Blog() {
           Practical guides on getting the most out of QR codes — no fluff, just what actually works.
         </p>
       </section>
+
+      <div className="section pb-10">
+        <div className="max-w-3xl mx-auto">
+          <AdSlot label="Advertisement" minHeight={90} />
+        </div>
+      </div>
 
       <section className="section pb-20">
         <div className="max-w-3xl mx-auto space-y-4">

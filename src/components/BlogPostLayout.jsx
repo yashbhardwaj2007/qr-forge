@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { HiChevronRight, HiOutlineClock, HiOutlineCalendar } from 'react-icons/hi';
+import AdSlot from './AdSlot.jsx';
 
 function formatDate(dateStr) {
   return new Date(`${dateStr}T00:00:00`).toLocaleDateString('en-US', {
@@ -55,7 +56,11 @@ export default function BlogPostLayout({ meta, children }) {
         {children}
       </div>
 
-      <div className="mt-12 max-w-3xl card p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
+      <div className="mt-10 max-w-3xl">
+        <AdSlot label="Advertisement" minHeight={90} />
+      </div>
+
+      <div className="mt-8 max-w-3xl card p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
         <div className="flex-1 text-center sm:text-left">
           <h2 className="font-display text-lg font-bold">Ready to make your own QR code?</h2>
           <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">
