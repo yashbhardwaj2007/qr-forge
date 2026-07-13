@@ -229,7 +229,10 @@ All QR encoding happens client-side using the `qrcode` library — no form data 
 QR Forge ships monetization-ready but monetization-*off* by default — nothing fake, nothing that silently fails in production.
 
 ### Newsletter signups
-Not connected until you set `VITE_NEWSLETTER_ENDPOINT` (see `.env.example`) to a form endpoint (Formspree, Web3Forms, Getform, or your own serverless function). Until then, the form is visible but tells users honestly that signups aren't connected yet, instead of showing a fake success message.
+Wired to [Web3Forms](https://web3forms.com) (free) — set `VITE_NEWSLETTER_ACCESS_KEY` (see `.env.example`) to your form's Access Key from the Web3Forms dashboard. Until then, the form is visible but tells users honestly that signups aren't connected yet, instead of showing a fake success message.
+
+### Contact form
+Same integration as the newsletter above — set `VITE_CONTACT_ACCESS_KEY` to a **second, separate** Web3Forms form's Access Key, so contact messages land apart from newsletter signups.
 
 ### Google AdSense
 Every `<AdSlot />` renders a harmless placeholder box in development, and switches to a real ad unit only once both `VITE_ADSENSE_CLIENT` (your publisher ID) and that instance's `slot` id are set — no code changes needed when you're approved. See `.env.example` for exact steps, and remember to also drop your real snippet into `public/ads.txt`.

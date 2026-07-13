@@ -12,4 +12,8 @@ export const BLOG_POST_COMPONENTS = {
   'qr-code-on-business-card': lazy(() => import('./posts/QrCodeBusinessCard.jsx')),
   'qr-codes-for-restaurants': lazy(() => import('./posts/QrCodesForRestaurants.jsx')),
   'static-vs-dynamic-qr-codes': lazy(() => import('./posts/StaticVsDynamicQrCodes.jsx')),
+  'email-phone-sms-qr-codes': lazy(() => import('./posts/EmailPhoneSmsQrCodes.jsx')),
+  'how-to-scan-a-qr-code': lazy(() => import('./posts/HowToScanQrCode.jsx')),
+  'qr-code-size-guide': lazy(() => import('./posts/QrCodeSizeGuide.jsx')),
+  'qr-codes-for-events': lazy(() => import('./posts/QrCodesForEvents.jsx')),
 };

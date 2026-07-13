@@ -1,8 +1,37 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { HiOutlineMail, HiOutlineLocationMarker, HiOutlinePaperAirplane } from 'react-icons/hi';
+import { HiOutlineLocationMarker, HiOutlinePaperAirplane } from 'react-icons/hi';
 import SEO from '../components/SEO.jsx';
 import AdSlot from '../components/AdSlot.jsx';
+
+// Built for Web3Forms (web3forms.com) — a single shared API endpoint plus an
+// "access key" identifying which of your forms a submission belongs to.
+// Set VITE_CONTACT_ACCESS_KEY in your environment (see .env.example) to the
+// Access Key shown on your form's page in the Web3Forms dashboard. Until
+// it's configured, the form stays visible but tells the user honestly that
+// it isn't connected yet — it never fakes a "message sent" toast for a
+// message that went nowhere.
+const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
+const ACCESS_KEY = import.meta.env.VITE_CONTACT_ACCESS_KEY || '';
+
+async function submitContactForm(form) {
+  const res = await fetch(WEB3FORMS_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      access_key: ACCESS_KEY,
+      name: form.name,
+      email: form.email,
+      message: form.message,
+      subject: `New contact message from ${form.name} — QR Forge`,
+      from_name: 'QR Forge Contact Form',
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || data.success === false) {
+    throw new Error(data.message || 'Message failed to send. Please try again.');
+  }
+}
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -16,16 +45,22 @@ export default function Contact() {
       toast.error('Please fill in all fields.');
       return;
     }
+
+    if (!ACCESS_KEY) {
+      toast.error("Sorry, the contact form isn't connected yet — please try again later.");
+      return;
+    }
+
     setSending(true);
-    // No backend is wired up. This opens the user's email client with the
-    // message pre-filled — swap for an API route or form service as needed.
-    await new Promise((r) => setTimeout(r, 500));
-    const subject = encodeURIComponent(`Message from ${form.name} via QR Forge`);
-    const body = encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`);
-    window.location.href = `mailto:hello@qrforge.app?subject=${subject}&body=${body}`;
-    setSending(false);
-    toast.success('Opening your email client…');
-    setForm({ name: '', email: '', message: '' });
+    try {
+      await submitContactForm(form);
+      toast.success("Message sent — we'll get back to you soon!");
+      setForm({ name: '', email: '', message: '' });
+    } catch (err) {
+      toast.error(err?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -45,12 +80,6 @@ export default function Contact() {
             </p>
 
             <div className="mt-8 space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-400">
-                  <HiOutlineMail size={18} aria-hidden="true" />
-                </span>
-                <span className="text-sm text-ink-600 dark:text-ink-300">hello@qrforge.app</span>
-              </div>
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-400">
                   <HiOutlineLocationMarker size={18} aria-hidden="true" />

@@ -56,6 +56,38 @@ export const BLOG_POSTS = [
     date: '2026-07-04',
     readingTime: '5 min read',
   },
+  {
+    slug: 'email-phone-sms-qr-codes',
+    title: 'Email vs Phone vs SMS QR Codes: Which One Should You Use?',
+    description:
+      "Three ways to let someone reach you with a scan, and each one sets a different expectation for how fast they'll hear back. A quick guide to picking the right one.",
+    date: '2026-07-13',
+    readingTime: '4 min read',
+  },
+  {
+    slug: 'how-to-scan-a-qr-code',
+    title: 'How to Scan a QR Code (No App Needed)',
+    description:
+      "It's built into your phone's camera already. A simple walkthrough for iPhone and Android, plus what to check if a scan isn't working.",
+    date: '2026-07-13',
+    readingTime: '3 min read',
+  },
+  {
+    slug: 'qr-code-size-guide',
+    title: "QR Code Size Guide: How Big Should Your QR Code Be?",
+    description:
+      "A QR code that looks fine on screen can be unscannable once printed too small. Practical sizing rules for business cards, flyers, posters, and storefronts.",
+    date: '2026-07-13',
+    readingTime: '4 min read',
+  },
+  {
+    slug: 'qr-codes-for-events',
+    title: 'QR Codes for Event Invitations: Directions, RSVPs, and Contacts',
+    description:
+      'Venue directions, RSVPs, and contact sharing — where QR codes genuinely help on an event invitation, and how to use them without overloading the card.',
+    date: '2026-07-13',
+    readingTime: '4 min read',
+  },
 ];
 
 export function getBlogPostMeta(slug) {

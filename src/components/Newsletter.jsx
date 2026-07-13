@@ -2,20 +2,31 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { HiOutlineMail } from 'react-icons/hi';
 
-// Set VITE_NEWSLETTER_ENDPOINT in your environment (see .env.example) to a
-// form-submission endpoint such as a Formspree/Web3Forms form URL, or your
-// own serverless function. Until it's configured, the form stays visible
-// but tells the user honestly that signups aren't connected yet — it never
-// fakes a success message for an email that went nowhere.
-const ENDPOINT = import.meta.env.VITE_NEWSLETTER_ENDPOINT || '';
+// Built for Web3Forms (web3forms.com) — a single shared API endpoint plus an
+// "access key" identifying which of your forms a submission belongs to.
+// Set VITE_NEWSLETTER_ACCESS_KEY in your environment (see .env.example) to
+// the Access Key shown on your form's page in the Web3Forms dashboard.
+// Until it's configured, the form stays visible but tells the user honestly
+// that signups aren't connected yet — it never fakes a success message for
+// an email that went nowhere.
+const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
+const ACCESS_KEY = import.meta.env.VITE_NEWSLETTER_ACCESS_KEY || '';
 
 async function submitEmail(email) {
-  const res = await fetch(ENDPOINT, {
+  const res = await fetch(WEB3FORMS_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({
+      access_key: ACCESS_KEY,
+      email,
+      subject: 'New newsletter signup — QR Forge',
+      from_name: 'QR Forge Newsletter',
+    }),
   });
-  if (!res.ok) throw new Error('Subscription failed. Please try again.');
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || data.success === false) {
+    throw new Error(data.message || 'Subscription failed. Please try again.');
+  }
 }
 
 function NewsletterForm({ compact, email, setEmail, loading, handleSubmit }) {
@@ -49,10 +60,10 @@ function NewsletterForm({ compact, email, setEmail, loading, handleSubmit }) {
 }
 
 /**
- * A newsletter signup form. Wire up VITE_NEWSLETTER_ENDPOINT (see
- * .env.example / README) to a real form-submission service to start
- * actually collecting emails — until then this intentionally shows a
- * "not connected yet" notice instead of a fake success toast.
+ * A newsletter signup form wired to Web3Forms. Set VITE_NEWSLETTER_ACCESS_KEY
+ * (see .env.example / README) to start actually collecting emails — until
+ * then this intentionally shows a "not connected yet" notice instead of a
+ * fake success toast.
  */
 export default function Newsletter({ compact = false }) {
   const [email, setEmail] = useState('');
@@ -62,7 +73,7 @@ export default function Newsletter({ compact = false }) {
     e.preventDefault();
     if (!email.trim()) return;
 
-    if (!ENDPOINT) {
+    if (!ACCESS_KEY) {
       toast.error('Newsletter signup isn\'t connected yet — see .env.example.');
       return;
     }
