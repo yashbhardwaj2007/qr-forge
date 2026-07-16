@@ -14,7 +14,7 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
-    "@sentry/react": "^10.64.0",
+    "@sentry/react": "^10.66.0",
     "@vercel/speed-insights": "^2.0.0",
     "jszip": "^3.10.1",
     "papaparse": "^5.5.4",
