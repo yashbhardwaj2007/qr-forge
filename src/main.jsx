@@ -9,7 +9,7 @@ import { initSentry, Sentry } from './lib/sentry.js';
 import './styles/index.css';
 
 initSentry();
-Sentry.captureException(new Error("Sentry Test"));
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Sentry.ErrorBoundary fallback={<ErrorFallback />}>
